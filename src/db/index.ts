@@ -1,22 +1,26 @@
 import { env } from "@/env";
 import * as schema from "./schema";
-import { PostgresJsDatabase, drizzle } from "drizzle-orm/postgres-js";
-import postgres from "postgres";
+// import { PostgresJsDatabase, drizzle } from "drizzle-orm/postgres-js";
+import { drizzle } from "drizzle-orm/vercel-postgres"
+import { sql } from "@vercel/postgres";
+// import postgres from "postgres";
 
-declare global {
+// declare global {
   // eslint-disable-next-line no-var -- only var works here
-  var db: PostgresJsDatabase<typeof schema> | undefined;
-}
+  // var db: PostgresJsDatabase<typeof schema> | undefined;
+// }
 
-let db: PostgresJsDatabase<typeof schema>;
+// let db: PostgresJsDatabase<typeof schema>;
+// Use this object to send drizzle queries to your DB
+export const db = drizzle(sql);
 
-if (env.NODE_ENV === "production") {
-  db = drizzle(postgres(env.DATABASE_URL), { schema });
-} else {
-  if (!global.db) {
-    global.db = drizzle(postgres(env.DATABASE_URL), { schema });
-  }
-  db = global.db;
-}
+// if (env.NODE_ENV === "production") {
+  // db = drizzle(postgres(env.DATABASE_URL), { schema });
+// } else {
+  // if (!global.db) {
+    // global.db = drizzle(postgres(env.DATABASE_URL), { schema });
+  // }
+  // db = global.db;
+// }
 
 export { db as database };
